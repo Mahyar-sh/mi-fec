@@ -13,6 +13,8 @@ export const VideosTable = ({ videos }: VideosTableProps) => (
           <th>Video Name</th>
           <th>Author</th>
           <th>Categories</th>
+          <th>Highest Quality Format</th>
+          <th>Release Date</th>
           <th>Options</th>
         </tr>
       </thead>
@@ -23,6 +25,8 @@ export const VideosTable = ({ videos }: VideosTableProps) => (
             <td>{video.name}</td>
             <td>{video.author}</td>
             <td>{video.categories.join(', ')}</td>
+            <td>{video.highestQuality}</td>
+            <td>{video.releaseDate}</td>
             <td>
               <button>Edit</button>
               <button>Delete</button>
