@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react';
+import { Button } from 'antd';
 
 import type { ProcessedVideo } from './common/interfaces';
 import { getVideos } from './services/videos';
 import { VideosTable } from './components/videos-table';
-import { Button } from './components/button';
 import styles from './app.module.css';
 
 export const App = () => {
@@ -17,7 +17,7 @@ export const App = () => {
     <>
       <header className={styles.header}>
         Videos
-        <Button primary>Add video</Button>
+        <Button type="primary">Add video</Button>
       </header>
 
       <main className={styles.main}>
