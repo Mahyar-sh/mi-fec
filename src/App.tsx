@@ -1,16 +1,32 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { Button } from 'antd';
 
 import type { ProcessedVideo } from './common/interfaces';
 import { getVideos } from './services/videos';
 import { VideosTable } from './components/videos-table';
 import styles from './app.module.css';
+import { MemoizedSearchField } from './components/search-field';
 
 export const App = () => {
-  const [videos, setVideos] = useState<ProcessedVideo[]>([]);
+  const videosRef = useRef<ProcessedVideo[]>([]);
+  const [filteredVideos, setFilteredVideos] = useState<ProcessedVideo[]>([]);
+
+  console.log('APP RENDER');
 
   useEffect(() => {
-    getVideos().then(setVideos);
+    getVideos().then((videos) => {
+      videosRef.current = videos;
+      setFilteredVideos(videosRef.current);
+    });
+  }, []);
+
+  const search = useCallback((term: string) => {
+    const filteredVideos = videosRef.current.filter((video) => video.name.toLowerCase().includes(term));
+    setFilteredVideos(filteredVideos);
+  }, []);
+
+  const resetSearch = useCallback(() => {
+    setFilteredVideos(videosRef.current);
   }, []);
 
   return (
@@ -22,7 +38,8 @@ export const App = () => {
 
       <main className={styles.main}>
         <h1>VManager Demo v0.0.1</h1>
-        <VideosTable videos={videos} />
+        <MemoizedSearchField search={search} resetSearch={resetSearch} />
+        <VideosTable videos={filteredVideos} />
       </main>
 
       <footer className={styles.footer}>VManager Demo v0.0.1</footer>
