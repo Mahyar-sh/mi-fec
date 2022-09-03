@@ -1,14 +1,14 @@
 import React, { ChangeEvent, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Input } from 'antd';
 
-import { debounce } from '../utils/debounce';
+import { debounce } from '../../utils/debounce';
 
 type SearchFieldProps = {
   search: (term: string) => void;
   resetSearch: () => void;
 };
 
-const SearchField: React.FC<SearchFieldProps> = ({ search, resetSearch }) => {
+const SearchField = ({ search, resetSearch }: SearchFieldProps) => {
   const [searchTerm, setSearchTerm] = useState<string>();
 
   console.log('SEARCH FIELD RENDER');

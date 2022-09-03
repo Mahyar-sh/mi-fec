@@ -1,7 +1,9 @@
-import type { ProcessedVideo } from '../common/interfaces';
+import type { ProcessedVideo } from '../../common/interfaces';
 import styles from './videos-table.module.css';
 import { Button } from 'antd';
 import { DeleteOutlined, EditOutlined } from '@ant-design/icons';
+import { Link } from 'react-router-dom';
+import { AppRoutes } from '../routes';
 
 type VideosTableProps = {
   videos: ProcessedVideo[];
@@ -30,7 +32,9 @@ export const VideosTable = ({ videos }: VideosTableProps) => (
             <td>{video.highestQuality}</td>
             <td>{video.releaseDate}</td>
             <td>
-              <Button type="primary" icon={<EditOutlined />} />
+              <Link to={`/${AppRoutes.EDIT_VIDEO}/${video.id}`}>
+                <Button type="primary" icon={<EditOutlined />} />
+              </Link>
               <Button type="primary" danger icon={<DeleteOutlined />} />
             </td>
           </tr>
