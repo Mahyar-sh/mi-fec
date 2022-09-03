@@ -2,9 +2,9 @@ import { Link, Route, Routes } from 'react-router-dom';
 import { Button } from 'antd';
 
 import styles from './app.module.css';
-import { VideoList } from './pages/video-list';
-import { EditVideo } from './pages/edit-video';
-import { CreateVideo } from './pages/create-video';
+import { VideoList } from './pages/video-list/video-list.page';
+import { EditVideo } from './pages/edit-video/edit-video.page';
+import { CreateVideo } from './pages/create-video/create-video.page';
 import { AppRoutes } from './pages/routes';
 
 export const App = () => {
