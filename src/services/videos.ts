@@ -1,6 +1,6 @@
 import { getCategories } from './categories';
 import { getAuthors } from './authors';
-import { Format, ProcessedVideo, Video } from '../common/interfaces';
+import { Category, Format, ProcessedVideo } from '../common/interfaces';
 
 export const getVideos = async (): Promise<ProcessedVideo[]> => {
   const [categories, authors] = await Promise.all([getCategories(), getAuthors()]);
@@ -8,14 +8,12 @@ export const getVideos = async (): Promise<ProcessedVideo[]> => {
   const processedVideos: ProcessedVideo[] = [];
   authors.forEach((author) => {
     author.videos.forEach((video) => {
-      const categoriesName: string[] = categories.filter((category) => video.catIds.includes(category.id)).map((category) => category.name);
-      const processedVideo: ProcessedVideo = {
+      processedVideos.push({
         ...video,
         author: author.name,
-        categories: categoriesName,
+        categories: computeCategories(video.catIds, categories),
         highestQuality: computeHighestQuality(video.formats),
-      };
-      processedVideos.push(processedVideo);
+      });
     });
   });
 
@@ -49,4 +47,8 @@ const compareFormatRes = (resA: string, resB: string) => {
   const resAInt = parseInt(resA.substring(0, resA.length - 2), 10);
   const resBInt = parseInt(resB.substring(0, resB.length - 2), 10);
   return resAInt > resBInt ? 1 : resAInt === resBInt ? 0 : -1;
+};
+
+const computeCategories = (videoCatIds: number[], categories: Category[]): string[] => {
+  return categories.filter((category) => videoCatIds.includes(category.id)).map((category) => category.name);
 };
