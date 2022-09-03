@@ -1,5 +1,7 @@
 import type { ProcessedVideo } from '../common/interfaces';
 import styles from './videos-table.module.css';
+import { Button } from 'antd';
+import { DeleteOutlined, EditOutlined } from '@ant-design/icons';
 
 type VideosTableProps = {
   videos: ProcessedVideo[];
@@ -28,8 +30,8 @@ export const VideosTable = ({ videos }: VideosTableProps) => (
             <td>{video.highestQuality}</td>
             <td>{video.releaseDate}</td>
             <td>
-              <button>Edit</button>
-              <button>Delete</button>
+              <Button type="primary" icon={<EditOutlined />} />
+              <Button type="primary" danger icon={<DeleteOutlined />} />
             </td>
           </tr>
         ))}
