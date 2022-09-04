@@ -1,45 +1,63 @@
 import type { ProcessedVideo } from '../../common/interfaces';
 import styles from './videos-table.module.css';
-import { Button } from 'antd';
+import { Button, Modal, Space, Table } from 'antd';
 import { DeleteOutlined, EditOutlined } from '@ant-design/icons';
 import { Link } from 'react-router-dom';
 import { AppRoutes } from '../routes';
+import { useVideosState } from '../../states/videos-context';
+import videoService from '../../services/videos';
+
+const { Column, ColumnGroup } = Table;
 
 type VideosTableProps = {
   videos: ProcessedVideo[];
 };
 
-export const VideosTable = ({ videos }: VideosTableProps) => (
-  <div className={styles.wrapper}>
-    <table className={styles.table}>
-      <thead>
-        <tr>
-          <th>Video Name</th>
-          <th>Author</th>
-          <th>Categories</th>
-          <th>Highest Quality Format</th>
-          <th>Release Date</th>
-          <th>Options</th>
-        </tr>
-      </thead>
+export const VideosTable = ({ videos }: VideosTableProps) => {
+  const { removeVideo, authors } = useVideosState();
 
-      <tbody>
-        {videos.map((video) => (
-          <tr key={video.id}>
-            <td>{video.name}</td>
-            <td>{video.author}</td>
-            <td>{video.categories.join(', ')}</td>
-            <td>{video.highestQuality}</td>
-            <td>{video.releaseDate}</td>
-            <td>
+  const onRemoveClicked = (video: ProcessedVideo) => {
+    Modal.confirm({
+      title: 'Remove video?',
+      content: 'Are you sure you want to remove video?',
+      okText: 'I am sure!',
+      cancelText: 'Not now',
+      onOk: () => {
+        videoService.removeVideo(video, authors).then(() => {
+          removeVideo(video);
+        });
+      },
+    });
+  };
+
+  return (
+    <div className={styles.wrapper}>
+      <Table dataSource={videos} pagination={false} rowKey="id">
+        <Column title="Video Name" dataIndex="name" key="name" />
+        <Column title="Author" dataIndex="author" key="author" />
+        <Column title="Categories" dataIndex="categories" key="categories" />
+        <Column title="Highest Quality Format" dataIndex="highestQuality" key="highestQuality" />
+        <Column title="Release Date" dataIndex="releaseDate" key="releaseDate" />
+        <Column
+          title="Options"
+          key="options"
+          render={(_: any, video: ProcessedVideo) => (
+            <Space size="middle">
               <Link to={`/${AppRoutes.EDIT_VIDEO}/${video.id}`}>
                 <Button type="primary" icon={<EditOutlined />} />
               </Link>
-              <Button type="primary" danger icon={<DeleteOutlined />} />
-            </td>
-          </tr>
-        ))}
-      </tbody>
-    </table>
-  </div>
-);
+              <Button
+                type="primary"
+                danger
+                onClick={(e) => {
+                  onRemoveClicked(video);
+                }}
+                icon={<DeleteOutlined />}
+              />
+            </Space>
+          )}
+        />
+      </Table>
+    </div>
+  );
+};

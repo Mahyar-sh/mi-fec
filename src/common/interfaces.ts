@@ -3,13 +3,13 @@ export interface Category {
   name: string;
 }
 
-export interface Video {
+export type Video = {
   id: number;
   catIds: number[];
   name: string;
   releaseDate: string;
   formats: Format;
-}
+};
 
 export interface Author {
   id: number;
@@ -17,16 +17,12 @@ export interface Author {
   videos: Video[];
 }
 
-export interface ProcessedVideo {
-  id: number;
-  name: string;
+export type ProcessedVideo = Video & {
+  authorId: number;
   author: string;
   categories: string[];
-  releaseDate: string;
   highestQuality: string;
-}
-
-export type VideoWithAuthorId = Video & { authorId: number };
+};
 
 export interface FormatValue {
   res: string;

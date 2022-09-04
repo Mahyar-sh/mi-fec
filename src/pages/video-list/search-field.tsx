@@ -1,5 +1,6 @@
 import React, { ChangeEvent, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Input } from 'antd';
+import styles from './search-field.module.css';
 
 import { debounce } from '../../utils/debounce';
 
@@ -31,7 +32,7 @@ const SearchField = ({ search, resetSearch }: SearchFieldProps) => {
     setSearchTerm(event.target.value);
   };
 
-  return <Input value={searchTerm} onChange={handleInput} />;
+  return <Input placeholder="Search ..." className={styles.field} value={searchTerm} onChange={handleInput} />;
 };
 
 export const MemoizedSearchField = React.memo(SearchField);

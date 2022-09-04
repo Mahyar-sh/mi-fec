@@ -4,7 +4,7 @@ import { useEffect } from 'react';
 
 import styles from './app.module.css';
 import { AppRoutes } from './pages/routes';
-import { getAllData } from './services/videos';
+import videoService from './services/videos';
 import { VideoList } from './pages/video-list/video-list.page';
 import { EditVideo } from './pages/edit-video/edit-video.page';
 import { CreateVideo } from './pages/create-video/create-video.page';
@@ -14,8 +14,8 @@ export const App = () => {
   const { setVideos, setCategories, setAuthors } = useVideosState();
 
   useEffect(() => {
-    getAllData().then(({ processedVideos, categories, authors }) => {
-      setVideos(processedVideos);
+    videoService.getAllData().then(({ videos, categories, authors }) => {
+      setVideos(videos);
       setCategories(categories);
       setAuthors(authors);
     });
@@ -24,7 +24,10 @@ export const App = () => {
   return (
     <>
       <header className={styles.header}>
-        Videos
+        <Link to={`/${AppRoutes.VIDEO_LIST}`}>
+          <span className={styles.homeButton}>Videos</span>
+        </Link>
+
         <Link to={`/${AppRoutes.CREATE_VIDEO}`}>
           <Button type="primary">Add video</Button>
         </Link>

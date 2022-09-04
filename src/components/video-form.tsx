@@ -1,8 +1,9 @@
 import { Button, Form, Input, Select } from 'antd';
 import { useVideosState } from '../states/videos-context';
 import { ChangeEvent, useEffect, useState } from 'react';
-import { Format, Video, VideoWithAuthorId } from '../common/interfaces';
+import { Format, ProcessedVideo } from '../common/interfaces';
 import { generateNewVideoId, generateRandomDate } from '../utils/video-utils';
+import styles from './video-form.module.css';
 
 const { Option } = Select;
 
@@ -10,9 +11,11 @@ const PREDEFINED_VIDEO_FORMAT: Format = {
   one: { res: '1080p', size: 1000 },
 };
 
+const PREDEFINED_HIGHEST_QUALITY: string = 'one 1080p';
+
 interface VideoFormProps {
-  submit: (video: Video, authorId: number) => void;
-  video?: VideoWithAuthorId;
+  submit: (video: ProcessedVideo) => void;
+  video?: ProcessedVideo;
 }
 
 export const VideoForm = ({ submit, video }: VideoFormProps) => {
@@ -50,20 +53,25 @@ export const VideoForm = ({ submit, video }: VideoFormProps) => {
   const submitClicked = () => {
     const randomDate = generateRandomDate();
     const randomDateString = `${randomDate.getFullYear()}-${randomDate.getMonth() + 1}-${randomDate.getDate()}`;
-    submit(
-      {
-        id: !!video ? video.id : generateNewVideoId(videos!),
-        name: videoName,
-        releaseDate: randomDateString,
-        catIds: categoryIds?.map((catId) => parseInt(catId, 10))!,
-        formats: !!video ? video.formats : PREDEFINED_VIDEO_FORMAT,
-      },
-      parseInt(authorId!, 10)
-    );
+    const authorIdInt = parseInt(authorId!, 10);
+    const categoryIdsInt = categoryIds?.map((catId) => parseInt(catId, 10))!;
+    const categoryNames = categoriesOptions.filter((category) => categoryIdsInt?.includes(category.id)).map((category) => category.name);
+    const authorName = authorsOptions.find((author) => author.id === authorIdInt)!.name;
+    submit({
+      id: !!video ? video.id : generateNewVideoId(videos!),
+      name: videoName,
+      releaseDate: !!video ? video.releaseDate : randomDateString,
+      authorId: parseInt(authorId!, 10),
+      author: authorName,
+      categories: categoryNames,
+      highestQuality: !!video ? video.highestQuality : PREDEFINED_HIGHEST_QUALITY,
+      catIds: categoryIdsInt,
+      formats: !!video ? video.formats : PREDEFINED_VIDEO_FORMAT,
+    });
   };
 
   return (
-    <Form layout="vertical">
+    <Form layout="vertical" className={styles.wrapper}>
       <Form.Item label="Video Name">
         <Input placeholder="Enter video name" value={videoName} onChange={handleVideoNameChangeChange} />
       </Form.Item>

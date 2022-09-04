@@ -1,18 +1,18 @@
 import { VideoForm } from '../../components/video-form';
-import { Video, VideoWithAuthorId } from '../../common/interfaces';
-import { addVideoToAuthor } from '../../services/videos';
+import { ProcessedVideo } from '../../common/interfaces';
+import videoService from '../../services/videos';
 import { useVideosState } from '../../states/videos-context';
 import { useNavigate } from 'react-router-dom';
 import { AppRoutes } from '../routes';
 
 export const CreateVideo = () => {
   console.log('CREATE VIDEOS');
-  const { categories, authors, videos, setVideos } = useVideosState();
+  const { categories, authors, videos, setVideos, addVideo } = useVideosState();
   const navigate = useNavigate();
 
-  const handleSubmit = (video: Video, authorId: number) => {
-    addVideoToAuthor(video, authorId, { categories, authors, videos }).then((createdVideo) => {
-      setVideos([...videos, createdVideo]);
+  const handleSubmit = (video: ProcessedVideo) => {
+    videoService.addVideoToAuthor(video, authors).then(() => {
+      addVideo(video);
       navigate(`/${AppRoutes.VIDEO_LIST}`);
     });
   };
