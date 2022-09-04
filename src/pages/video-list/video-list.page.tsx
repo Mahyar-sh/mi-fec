@@ -1,29 +1,31 @@
 import { MemoizedSearchField } from './search-field';
 import { VideosTable } from './videos-table';
-import { useCallback, useEffect, useRef, useState } from 'react';
-import { getVideos } from '../../services/videos';
+import { useCallback, useEffect, useState } from 'react';
 import { ProcessedVideo } from '../../common/interfaces';
+import { useVideosState } from '../../states/videos-context';
 
 export const VideoList = () => {
-  const videosRef = useRef<ProcessedVideo[]>([]);
+  const state = useVideosState();
   const [filteredVideos, setFilteredVideos] = useState<ProcessedVideo[]>([]);
 
   console.log('VideoList RENDER');
 
   useEffect(() => {
-    getVideos().then((videos) => {
-      videosRef.current = videos;
-      setFilteredVideos(videosRef.current);
-    });
-  }, []);
+    if (!!state.videos) {
+      setFilteredVideos(state.videos);
+    }
+  }, [state.videos]);
 
-  const search = useCallback((term: string) => {
-    const filteredVideos = videosRef.current.filter((video) => video.name.toLowerCase().includes(term));
-    setFilteredVideos(filteredVideos);
-  }, []);
+  const search = useCallback(
+    (term: string) => {
+      const filteredVideos = state.videos!.filter((video) => video.name.toLowerCase().includes(term));
+      setFilteredVideos(filteredVideos);
+    },
+    [state.videos]
+  );
 
   const resetSearch = useCallback(() => {
-    setFilteredVideos(videosRef.current);
+    setFilteredVideos(state.videos!);
   }, []);
 
   return (

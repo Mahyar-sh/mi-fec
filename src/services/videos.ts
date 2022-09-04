@@ -1,8 +1,16 @@
 import { getCategories } from './categories';
-import { getAuthors } from './authors';
-import { Category, Format, ProcessedVideo } from '../common/interfaces';
+import { getAuthors, updateAuthor } from './authors';
+import { Author, Category, ProcessedVideo, Video, VideoWithAuthorId } from '../common/interfaces';
+import { computeCategories, computeHighestQuality } from '../utils/video-utils';
+import { VideosContext, VideoState } from '../states/videos-context';
 
-export const getVideos = async (): Promise<ProcessedVideo[]> => {
+interface GetAllDataReturn {
+  processedVideos: ProcessedVideo[];
+  categories: Category[];
+  authors: Author[];
+}
+
+export const getAllData = async (): Promise<GetAllDataReturn> => {
   const [categories, authors] = await Promise.all([getCategories(), getAuthors()]);
 
   const processedVideos: ProcessedVideo[] = [];
@@ -17,38 +25,21 @@ export const getVideos = async (): Promise<ProcessedVideo[]> => {
     });
   });
 
-  return processedVideos;
+  return { processedVideos, categories, authors };
 };
 
-const computeHighestQuality = (formats: Format): string => {
-  let highestQuality = {
-    size: Number.NEGATIVE_INFINITY,
-    res: '',
-    name: '',
+export const addVideoToAuthor = async (
+  video: Video,
+  authorId: number,
+  { authors, videos, categories }: VideoState
+): Promise<ProcessedVideo> => {
+  const targetAuthor = authors?.find((author) => author.id === authorId);
+  const updatedAuthor = await updateAuthor({ ...targetAuthor!, videos: [...(targetAuthor?.videos ?? []), video] });
+  const processedVideo: ProcessedVideo = {
+    ...video,
+    author: updatedAuthor.name,
+    categories: computeCategories(video.catIds, categories!),
+    highestQuality: computeHighestQuality(video.formats),
   };
-  for (const formatsKey in formats) {
-    const format = formats[formatsKey];
-    if (format.size > highestQuality.size) {
-      highestQuality = {
-        ...format,
-        name: formatsKey,
-      };
-    } else if (format.size === highestQuality.size && compareFormatRes(format.res, highestQuality.res) === 1) {
-      highestQuality = {
-        ...format,
-        name: formatsKey,
-      };
-    }
-  }
-  return `${highestQuality.name} ${highestQuality.res}`;
-};
-
-const compareFormatRes = (resA: string, resB: string) => {
-  const resAInt = parseInt(resA.substring(0, resA.length - 2), 10);
-  const resBInt = parseInt(resB.substring(0, resB.length - 2), 10);
-  return resAInt > resBInt ? 1 : resAInt === resBInt ? 0 : -1;
-};
-
-const computeCategories = (videoCatIds: number[], categories: Category[]): string[] => {
-  return categories.filter((category) => videoCatIds.includes(category.id)).map((category) => category.name);
+  return processedVideo;
 };

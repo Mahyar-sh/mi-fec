@@ -10,7 +10,6 @@ type SearchFieldProps = {
 
 const SearchField = ({ search, resetSearch }: SearchFieldProps) => {
   const [searchTerm, setSearchTerm] = useState<string>();
-
   console.log('SEARCH FIELD RENDER');
   const debouncedSearch = useMemo(() => {
     return debounce(2000, (term) => {
@@ -20,7 +19,7 @@ const SearchField = ({ search, resetSearch }: SearchFieldProps) => {
         resetSearch();
       }
     });
-  }, []);
+  }, [search, resetSearch]);
 
   useEffect(() => {
     if (searchTerm !== undefined) {

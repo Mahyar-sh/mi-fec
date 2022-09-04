@@ -26,6 +26,8 @@ export interface ProcessedVideo {
   highestQuality: string;
 }
 
+export type VideoWithAuthorId = Video & { authorId: number };
+
 export interface FormatValue {
   res: string;
   size: number;
