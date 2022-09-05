@@ -1,27 +1,27 @@
-import { useNavigate, useParams } from 'react-router-dom';
 import { useEffect, useState } from 'react';
-import { VideoForm } from '../../components/video-form';
-import { useVideosState } from '../../states/videos-context';
-import { ProcessedVideo } from '../../common/interfaces';
+import { useNavigate, useParams } from 'react-router-dom';
+
 import { AppRoutes } from '../routes';
 import videoService from './../../services/videos';
+import { VideoForm } from '../../components/video-form';
+import { ProcessedVideo } from '../../common/interfaces';
+import { useVideosState } from '../../states/videos-context';
 
 export const EditVideo = () => {
   const params = useParams();
-  const { videos, authors, categories, editVideo, addVideo, removeVideo, moveVideoToOtherAuthor } = useVideosState();
+  const { videos, authors, editVideo, moveVideoToOtherAuthor } = useVideosState();
   const [video, setVideo] = useState<ProcessedVideo>();
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (!!params?.videoId) {
+    const setSelectedVideo = () => {
+      const video = videos.find((video) => video.id === parseInt(params.videoId!));
+      setVideo(video);
+    };
+    if (!!params?.videoId && videos.length > 0) {
       setSelectedVideo();
     }
-  }, [params]);
-
-  const setSelectedVideo = () => {
-    const video = videos.find((video) => video.id === parseInt(params.videoId!));
-    setVideo(video);
-  };
+  }, [params, videos]);
 
   const handleSubmit = (updatedVideo: ProcessedVideo) => {
     const authorChanged = updatedVideo.authorId !== video?.authorId;
@@ -40,7 +40,6 @@ export const EditVideo = () => {
     }
   };
 
-  console.log('EDIT VIDEOS');
   return (
     <>
       <h3>Edit video</h3>

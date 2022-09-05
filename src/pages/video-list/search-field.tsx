@@ -1,7 +1,7 @@
-import React, { ChangeEvent, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Input } from 'antd';
-import styles from './search-field.module.css';
+import React, { ChangeEvent, useEffect, useMemo, useState } from 'react';
 
+import styles from './search-field.module.css';
 import { debounce } from '../../utils/debounce';
 
 type SearchFieldProps = {
@@ -11,10 +11,10 @@ type SearchFieldProps = {
 
 const SearchField = ({ search, resetSearch }: SearchFieldProps) => {
   const [searchTerm, setSearchTerm] = useState<string>();
-  console.log('SEARCH FIELD RENDER');
+
   const debouncedSearch = useMemo(() => {
-    return debounce(2000, (term) => {
-      if (searchTerm !== '') {
+    return debounce(500, (term) => {
+      if (term !== '') {
         search(term.toLowerCase());
       } else {
         resetSearch();

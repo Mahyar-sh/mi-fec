@@ -1,14 +1,13 @@
-import { MemoizedSearchField } from './search-field';
-import { VideosTable } from './videos-table';
 import { useCallback, useEffect, useState } from 'react';
+
+import { VideosTable } from './videos-table';
+import { MemoizedSearchField } from './search-field';
 import { ProcessedVideo } from '../../common/interfaces';
 import { useVideosState } from '../../states/videos-context';
 
 export const VideoList = () => {
   const state = useVideosState();
   const [filteredVideos, setFilteredVideos] = useState<ProcessedVideo[]>([]);
-
-  console.log('VideoList RENDER');
 
   useEffect(() => {
     if (!!state.videos) {
@@ -26,7 +25,7 @@ export const VideoList = () => {
 
   const resetSearch = useCallback(() => {
     setFilteredVideos(state.videos!);
-  }, []);
+  }, [state.videos]);
 
   return (
     <>

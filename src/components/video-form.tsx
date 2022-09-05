@@ -1,17 +1,13 @@
 import { Button, Form, Input, Select } from 'antd';
-import { useVideosState } from '../states/videos-context';
 import { ChangeEvent, useEffect, useState } from 'react';
-import { Format, ProcessedVideo } from '../common/interfaces';
-import { generateNewVideoId, generateRandomDate } from '../utils/video-utils';
+
 import styles from './video-form.module.css';
+import { ProcessedVideo } from '../common/interfaces';
+import { useVideosState } from '../states/videos-context';
+import { generateNewVideoId, generateRandomDate } from '../utils/video-utils';
+import { PREDEFINED_HIGHEST_QUALITY, PREDEFINED_VIDEO_FORMAT } from '../common/const';
 
 const { Option } = Select;
-
-const PREDEFINED_VIDEO_FORMAT: Format = {
-  one: { res: '1080p', size: 1000 },
-};
-
-const PREDEFINED_HIGHEST_QUALITY: string = 'one 1080p';
 
 interface VideoFormProps {
   submit: (video: ProcessedVideo) => void;
@@ -19,7 +15,6 @@ interface VideoFormProps {
 }
 
 export const VideoForm = ({ submit, video }: VideoFormProps) => {
-  console.log('VIDEO FORM RENDER');
   const { categories: categoriesOptions, authors: authorsOptions, videos } = useVideosState();
 
   const [videoName, setVideoName] = useState<string>('');
@@ -27,16 +22,15 @@ export const VideoForm = ({ submit, video }: VideoFormProps) => {
   const [categoryIds, setCategoryIds] = useState<string[]>();
 
   useEffect(() => {
+    const initializeForm = () => {
+      setVideoName(video?.name!);
+      setAuthorId(JSON.stringify(video?.authorId));
+      setCategoryIds(video?.catIds.map((catId) => JSON.stringify(catId)));
+    };
     if (!!video) {
       initializeForm();
     }
   }, [video]);
-
-  const initializeForm = () => {
-    setVideoName(video?.name!);
-    setAuthorId(JSON.stringify(video?.authorId));
-    setCategoryIds(video?.catIds.map((catId) => JSON.stringify(catId)));
-  };
 
   const handleCategoryChange = (values: string[]) => {
     setCategoryIds(values);
@@ -82,8 +76,8 @@ export const VideoForm = ({ submit, video }: VideoFormProps) => {
           ))}
         </Select>
       </Form.Item>
-      <Form.Item label="Video categories">
-        <Select onChange={handleCategoryChange} value={categoryIds} mode="multiple" placeholder="Select Categories">
+      <Form.Item label="Video Categories">
+        <Select placeholder="Select categories" value={categoryIds} onChange={handleCategoryChange} mode="multiple">
           {categoriesOptions?.map((category) => (
             <Option key={category.id}>{category.name}</Option>
           ))}

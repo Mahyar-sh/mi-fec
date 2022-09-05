@@ -5,10 +5,10 @@ import { useEffect } from 'react';
 import styles from './app.module.css';
 import { AppRoutes } from './pages/routes';
 import videoService from './services/videos';
+import { useVideosState } from './states/videos-context';
 import { VideoList } from './pages/video-list/video-list.page';
 import { EditVideo } from './pages/edit-video/edit-video.page';
 import { CreateVideo } from './pages/create-video/create-video.page';
-import { useVideosState } from './states/videos-context';
 
 export const App = () => {
   const { setVideos, setCategories, setAuthors } = useVideosState();

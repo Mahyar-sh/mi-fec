@@ -1,13 +1,14 @@
-import type { ProcessedVideo } from '../../common/interfaces';
-import styles from './videos-table.module.css';
+import { Link } from 'react-router-dom';
 import { Button, Modal, Space, Table } from 'antd';
 import { DeleteOutlined, EditOutlined } from '@ant-design/icons';
-import { Link } from 'react-router-dom';
-import { AppRoutes } from '../routes';
-import { useVideosState } from '../../states/videos-context';
-import videoService from '../../services/videos';
 
-const { Column, ColumnGroup } = Table;
+import { AppRoutes } from '../routes';
+import styles from './videos-table.module.css';
+import videoService from '../../services/videos';
+import type { ProcessedVideo } from '../../common/interfaces';
+import { useVideosState } from '../../states/videos-context';
+
+const { Column } = Table;
 
 type VideosTableProps = {
   videos: ProcessedVideo[];

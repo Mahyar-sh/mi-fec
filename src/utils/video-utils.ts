@@ -1,4 +1,4 @@
-import { Category, Format, ProcessedVideo, Video } from '../common/interfaces';
+import { Category, Format, ProcessedVideo } from '../common/interfaces';
 
 export const generateRandomDate = (start = new Date(1970, 0, 1), end = new Date()): Date => {
   return new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime()));

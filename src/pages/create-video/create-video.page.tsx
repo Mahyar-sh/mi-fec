@@ -1,13 +1,13 @@
+import { useNavigate } from 'react-router-dom';
+
+import { AppRoutes } from '../routes';
+import videoService from '../../services/videos';
 import { VideoForm } from '../../components/video-form';
 import { ProcessedVideo } from '../../common/interfaces';
-import videoService from '../../services/videos';
 import { useVideosState } from '../../states/videos-context';
-import { useNavigate } from 'react-router-dom';
-import { AppRoutes } from '../routes';
 
 export const CreateVideo = () => {
-  console.log('CREATE VIDEOS');
-  const { categories, authors, videos, setVideos, addVideo } = useVideosState();
+  const { authors, addVideo } = useVideosState();
   const navigate = useNavigate();
 
   const handleSubmit = (video: ProcessedVideo) => {
@@ -19,7 +19,7 @@ export const CreateVideo = () => {
 
   return (
     <>
-      <h3>Add Video</h3>
+      <h3>Add video</h3>
       <VideoForm submit={handleSubmit} />
     </>
   );

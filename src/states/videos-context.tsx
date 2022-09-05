@@ -1,5 +1,6 @@
-import { Author, Category, ProcessedVideo } from '../common/interfaces';
 import React, { createContext, Dispatch, SetStateAction, useContext, useState } from 'react';
+
+import { Author, Category, ProcessedVideo } from '../common/interfaces';
 
 type VideoState = {
   videos: ProcessedVideo[];
