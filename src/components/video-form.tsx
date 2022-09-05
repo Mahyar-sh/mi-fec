@@ -21,6 +21,8 @@ export const VideoForm = ({ submit, video }: VideoFormProps) => {
   const [authorId, setAuthorId] = useState<string>();
   const [categoryIds, setCategoryIds] = useState<string[]>();
 
+  const validForm = !!videoName && (categoryIds ?? []).length > 0 && authorId !== undefined && authorId !== null;
+
   useEffect(() => {
     const initializeForm = () => {
       setVideoName(video?.name!);
@@ -84,7 +86,7 @@ export const VideoForm = ({ submit, video }: VideoFormProps) => {
         </Select>
       </Form.Item>
       <Form.Item>
-        <Button type="primary" onClick={submitClicked}>
+        <Button type="primary" onClick={submitClicked} disabled={!validForm}>
           Submit
         </Button>
       </Form.Item>
