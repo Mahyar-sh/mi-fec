@@ -1,12 +1,12 @@
 import { getCategories } from './categories';
 import { getAuthors, updateAuthor } from './authors';
-import { Author, Category, ProcessedVideo, Video } from '../common/interfaces';
+import { Category, ProcessedVideo, SimpleAuthor, Video } from '../common/interfaces';
 import { computeCategories, computeHighestQuality, deriveVideosFromProcessedVideos } from '../utils/video-utils';
 
 interface GetAllDataReturn {
   videos: ProcessedVideo[];
   categories: Category[];
-  authors: Author[];
+  simpleAuthors: SimpleAuthor[];
 }
 
 const getAllData = async (): Promise<GetAllDataReturn> => {
@@ -25,10 +25,18 @@ const getAllData = async (): Promise<GetAllDataReturn> => {
     });
   });
 
-  return { videos: processedVideos, categories, authors };
+  return {
+    videos: processedVideos,
+    categories,
+    simpleAuthors: authors.map((author) => ({ id: author.id, name: author.name })),
+  };
 };
 
-const addVideoToAuthor = async (processedVideo: ProcessedVideo, authors: Author[], videos: ProcessedVideo[]): Promise<ProcessedVideo> => {
+const addVideoToAuthor = async (
+  processedVideo: ProcessedVideo,
+  authors: SimpleAuthor[],
+  videos: ProcessedVideo[]
+): Promise<ProcessedVideo> => {
   const targetAuthor = authors?.find((author) => author.id === processedVideo.authorId);
   const video: Video = {
     id: processedVideo.id,
@@ -42,7 +50,7 @@ const addVideoToAuthor = async (processedVideo: ProcessedVideo, authors: Author[
   return processedVideo;
 };
 
-const editVideo = async (processedVideo: ProcessedVideo, authors: Author[], videos: ProcessedVideo[]): Promise<ProcessedVideo> => {
+const editVideo = async (processedVideo: ProcessedVideo, authors: SimpleAuthor[], videos: ProcessedVideo[]): Promise<ProcessedVideo> => {
   const targetAuthor = authors?.find((author) => author.id === processedVideo.authorId);
   const updatedVideo: Video = {
     id: processedVideo.id,
@@ -57,7 +65,7 @@ const editVideo = async (processedVideo: ProcessedVideo, authors: Author[], vide
   return processedVideo;
 };
 
-const removeVideo = async (processedVideo: ProcessedVideo, authors: Author[], videos: ProcessedVideo[]): Promise<ProcessedVideo> => {
+const removeVideo = async (processedVideo: ProcessedVideo, authors: SimpleAuthor[], videos: ProcessedVideo[]): Promise<ProcessedVideo> => {
   const targetAuthor = authors?.find((author) => author.id === processedVideo.authorId);
   const authorVideos = deriveVideosFromProcessedVideos(videos, targetAuthor!.id);
 

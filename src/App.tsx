@@ -14,10 +14,10 @@ export const App = () => {
   const { setVideos, setCategories, setAuthors } = useVideosState();
 
   useEffect(() => {
-    videoService.getAllData().then(({ videos, categories, authors }) => {
+    videoService.getAllData().then(({ videos, categories, simpleAuthors }) => {
       setVideos(videos);
       setCategories(categories);
-      setAuthors(authors);
+      setAuthors(simpleAuthors);
     });
   }, []);
 

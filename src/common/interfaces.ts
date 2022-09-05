@@ -17,6 +17,8 @@ export interface Author {
   videos: Video[];
 }
 
+export type SimpleAuthor = Omit<Author, 'videos'>;
+
 export type ProcessedVideo = Video & {
   authorId: number;
   author: string;

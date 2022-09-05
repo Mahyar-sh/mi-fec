@@ -1,15 +1,15 @@
 import React, { createContext, Dispatch, SetStateAction, useContext, useState } from 'react';
 
-import { Author, Category, ProcessedVideo } from '../common/interfaces';
+import { Category, ProcessedVideo, SimpleAuthor } from '../common/interfaces';
 
 type VideoState = {
   videos: ProcessedVideo[];
-  authors: Author[];
+  authors: SimpleAuthor[];
   categories: Category[];
 };
 
 type VideosContext = {
-  setAuthors: Dispatch<SetStateAction<Author[]>>;
+  setAuthors: Dispatch<SetStateAction<SimpleAuthor[]>>;
   setVideos: Dispatch<SetStateAction<ProcessedVideo[]>>;
   setCategories: Dispatch<SetStateAction<Category[]>>;
   addVideo: (video: ProcessedVideo) => void;
@@ -22,7 +22,7 @@ export const VideosStateContext = createContext<VideosContext | undefined>(undef
 
 export const VideosStateProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [videos, setVideos] = useState<ProcessedVideo[]>([]);
-  const [authors, setAuthors] = useState<Author[]>([]);
+  const [authors, setAuthors] = useState<SimpleAuthor[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
 
   const addVideo = (video: ProcessedVideo) => {

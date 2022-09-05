@@ -22,6 +22,7 @@ export const VideosTable = ({ videos }: VideosTableProps) => {
       title: 'Remove video?',
       content: 'Are you sure you want to remove video?',
       okText: 'I am sure!',
+      okType: 'danger',
       cancelText: 'Not now',
       onOk: () => {
         videoService.removeVideo(video, authors, stateVideos).then(() => {
