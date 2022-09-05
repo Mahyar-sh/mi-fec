@@ -26,7 +26,6 @@ export const VideosStateProvider: React.FC<{ children: React.ReactNode }> = ({ c
   const [categories, setCategories] = useState<Category[]>([]);
 
   const addVideo = (video: ProcessedVideo) => {
-    debugger;
     setVideos([...videos, video]);
   };
 
