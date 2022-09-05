@@ -1,7 +1,7 @@
 import { getCategories } from './categories';
 import { getAuthors, updateAuthor } from './authors';
 import { Author, Category, ProcessedVideo, Video } from '../common/interfaces';
-import { computeCategories, computeHighestQuality } from '../utils/video-utils';
+import { computeCategories, computeHighestQuality, deriveVideosFromProcessedVideos } from '../utils/video-utils';
 
 interface GetAllDataReturn {
   videos: ProcessedVideo[];
@@ -28,7 +28,7 @@ const getAllData = async (): Promise<GetAllDataReturn> => {
   return { videos: processedVideos, categories, authors };
 };
 
-const addVideoToAuthor = async (processedVideo: ProcessedVideo, authors: Author[]): Promise<ProcessedVideo> => {
+const addVideoToAuthor = async (processedVideo: ProcessedVideo, authors: Author[], videos: ProcessedVideo[]): Promise<ProcessedVideo> => {
   const targetAuthor = authors?.find((author) => author.id === processedVideo.authorId);
   const video: Video = {
     id: processedVideo.id,
@@ -37,11 +37,12 @@ const addVideoToAuthor = async (processedVideo: ProcessedVideo, authors: Author[
     formats: processedVideo.formats,
     releaseDate: processedVideo.releaseDate,
   };
-  await updateAuthor({ ...targetAuthor!, videos: [...(targetAuthor?.videos ?? []), video] });
+  const authorVideos = deriveVideosFromProcessedVideos(videos, targetAuthor!.id);
+  await updateAuthor({ ...targetAuthor!, videos: [...authorVideos, video] });
   return processedVideo;
 };
 
-const editVideo = async (processedVideo: ProcessedVideo, authors: Author[]): Promise<ProcessedVideo> => {
+const editVideo = async (processedVideo: ProcessedVideo, authors: Author[], videos: ProcessedVideo[]): Promise<ProcessedVideo> => {
   const targetAuthor = authors?.find((author) => author.id === processedVideo.authorId);
   const updatedVideo: Video = {
     id: processedVideo.id,
@@ -50,17 +51,19 @@ const editVideo = async (processedVideo: ProcessedVideo, authors: Author[]): Pro
     formats: processedVideo.formats,
     releaseDate: processedVideo.releaseDate,
   };
-  const updatedVideos = targetAuthor!.videos.map((video) => (video.id === processedVideo.id ? updatedVideo : video));
+  const authorVideos = deriveVideosFromProcessedVideos(videos, targetAuthor!.id);
+  const updatedVideos = authorVideos.map((video) => (video.id === processedVideo.id ? updatedVideo : video));
   await updateAuthor({ ...targetAuthor!, videos: updatedVideos });
   return processedVideo;
 };
 
-const removeVideo = async (processedVideo: ProcessedVideo, authors: Author[]): Promise<ProcessedVideo> => {
+const removeVideo = async (processedVideo: ProcessedVideo, authors: Author[], videos: ProcessedVideo[]): Promise<ProcessedVideo> => {
   const targetAuthor = authors?.find((author) => author.id === processedVideo.authorId);
-  const videoIndex = targetAuthor!.videos.findIndex((video) => processedVideo.id === video.id);
-  let updatedVideos = targetAuthor!.videos;
-  updatedVideos.splice(videoIndex, 1);
-  await updateAuthor({ ...targetAuthor!, videos: updatedVideos });
+  const authorVideos = deriveVideosFromProcessedVideos(videos, targetAuthor!.id);
+
+  const videoIndex = authorVideos.findIndex((video) => processedVideo.id === video.id);
+  authorVideos.splice(videoIndex, 1);
+  await updateAuthor({ ...targetAuthor!, videos: authorVideos });
   return processedVideo;
 };
 

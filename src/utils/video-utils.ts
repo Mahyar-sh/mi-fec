@@ -1,4 +1,4 @@
-import { Category, Format, ProcessedVideo } from '../common/interfaces';
+import { Category, Format, ProcessedVideo, Video } from '../common/interfaces';
 
 export const generateRandomDate = (start = new Date(1970, 0, 1), end = new Date()): Date => {
   return new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime()));
@@ -40,4 +40,18 @@ export const compareFormatRes = (resA: string, resB: string): 0 | 1 | -1 => {
 
 export const computeCategories = (videoCatIds: number[], categories: Category[]): string[] => {
   return categories.filter((category) => videoCatIds.includes(category.id)).map((category) => category.name);
+};
+
+export const deriveVideosFromProcessedVideos = (processedVideos: ProcessedVideo[], authorId: number): Video[] => {
+  return processedVideos
+    .filter((processedVideo) => processedVideo.authorId === authorId)
+    .map((processedVideo) => {
+      return {
+        id: processedVideo.id,
+        name: processedVideo.name,
+        formats: processedVideo.formats,
+        releaseDate: processedVideo.releaseDate,
+        catIds: processedVideo.catIds,
+      };
+    });
 };

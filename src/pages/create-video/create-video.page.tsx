@@ -7,11 +7,11 @@ import { ProcessedVideo } from '../../common/interfaces';
 import { useVideosState } from '../../states/videos-context';
 
 export const CreateVideo = () => {
-  const { authors, addVideo } = useVideosState();
+  const { authors, addVideo, videos } = useVideosState();
   const navigate = useNavigate();
 
   const handleSubmit = (video: ProcessedVideo) => {
-    videoService.addVideoToAuthor(video, authors).then(() => {
+    videoService.addVideoToAuthor(video, authors, videos).then(() => {
       addVideo(video);
       navigate(`/${AppRoutes.VIDEO_LIST}`);
     });

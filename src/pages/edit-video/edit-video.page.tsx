@@ -26,13 +26,13 @@ export const EditVideo = () => {
   const handleSubmit = (updatedVideo: ProcessedVideo) => {
     const authorChanged = updatedVideo.authorId !== video?.authorId;
     if (!authorChanged) {
-      videoService.editVideo(updatedVideo, authors).then(() => {
+      videoService.editVideo(updatedVideo, authors, videos).then(() => {
         editVideo(updatedVideo);
         navigate(`/${AppRoutes.VIDEO_LIST}`);
       });
     } else {
-      const addVideoToAuthor = videoService.addVideoToAuthor(updatedVideo, authors);
-      const removeVideoFromPrevAuthor = videoService.removeVideo(video!, authors);
+      const addVideoToAuthor = videoService.addVideoToAuthor(updatedVideo, authors, videos);
+      const removeVideoFromPrevAuthor = videoService.removeVideo(video!, authors, videos);
       Promise.all([addVideoToAuthor, removeVideoFromPrevAuthor]).then(() => {
         moveVideoToOtherAuthor(updatedVideo);
         navigate(`/${AppRoutes.VIDEO_LIST}`);

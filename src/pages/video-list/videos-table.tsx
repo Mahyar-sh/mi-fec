@@ -15,7 +15,7 @@ type VideosTableProps = {
 };
 
 export const VideosTable = ({ videos }: VideosTableProps) => {
-  const { removeVideo, authors } = useVideosState();
+  const { removeVideo, authors, videos: stateVideos } = useVideosState();
 
   const onRemoveClicked = (video: ProcessedVideo) => {
     Modal.confirm({
@@ -24,7 +24,7 @@ export const VideosTable = ({ videos }: VideosTableProps) => {
       okText: 'I am sure!',
       cancelText: 'Not now',
       onOk: () => {
-        videoService.removeVideo(video, authors).then(() => {
+        videoService.removeVideo(video, authors, stateVideos).then(() => {
           removeVideo(video);
         });
       },
@@ -36,7 +36,12 @@ export const VideosTable = ({ videos }: VideosTableProps) => {
       <Table dataSource={videos} pagination={false} rowKey="id">
         <Column title="Video Name" dataIndex="name" key="name" />
         <Column title="Author" dataIndex="author" key="author" />
-        <Column title="Categories" dataIndex="categories" key="categories" />
+        <Column
+          title="Categories"
+          dataIndex="categories"
+          key="categories"
+          render={(_: any, video: ProcessedVideo) => video.categories.join(', ')}
+        />
         <Column title="Highest Quality Format" dataIndex="highestQuality" key="highestQuality" />
         <Column title="Release Date" dataIndex="releaseDate" key="releaseDate" />
         <Column
